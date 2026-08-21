@@ -1,53 +1,78 @@
-const CACHE_NAME = 'slovakia-2026-v5';
-const CORE_ASSETS = ['./', './index.html', './manifest.webmanifest'];
+const CORE_CACHE = 'slovakia-guide-core-v8';
+const TRAIL_CACHE = 'slovakia-guide-trails-v3';
+const CORE_URLS = [
+  './', './guide.html', './trail-days.json',
+  './aug31-lomnica.gpx', './sep1-hrebienok.gpx', './sep2-strbske-popradske.gpx',
+  './sep3-sucha-bela.gpx', './sep4-bachledka-cave.gpx',
+];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => Promise.all(
-        CORE_ASSETS.map(asset => cache.add(asset).catch(() => undefined))
-      ))
-      .then(() => self.skipWaiting())
-  );
+  self.skipWaiting();
+  event.waitUntil((async () => {
+    const cache = await caches.open(CORE_CACHE);
+    await Promise.allSettled(CORE_URLS.map(async url => {
+      const response = await fetch(url, { cache: 'reload' });
+      if (response.ok) await cache.put(url, response);
+    }));
+  })());
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      ))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keep = new Set([CORE_CACHE, TRAIL_CACHE]);
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => !keep.has(name)).map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
+  const url = new URL(event.request.url);
+  if (url.hostname === 'outdoor.tiles.freemap.sk') {
+    event.respondWith((async () => {
+      const cache = await caches.open(TRAIL_CACHE);
+      const cached = await cache.match(event.request);
+      if (cached) return cached;
+      const response = await fetch(event.request);
+      await cache.put(event.request, response.clone());
+      return response;
+    })());
     return;
   }
-
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-
-      return fetch(event.request).then(response => {
-        if (response.ok && new URL(event.request.url).origin === self.location.origin) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-        }
+  if (url.origin === self.location.origin && event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(event.request);
+        const cache = await caches.open(CORE_CACHE);
+        await cache.put(event.request, response.clone());
         return response;
-      });
-    })
-  );
+      } catch (error) {
+        return (await caches.match(event.request)) || (await caches.match('./guide.html'));
+      }
+    })());
+  }
+});
+
+self.addEventListener('message', event => {
+  if (!event.data || event.data.type !== 'CACHE_TRAIL_MAP') return;
+  const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
+  const dayId = event.data.dayId;
+  event.waitUntil((async () => {
+    const cache = await caches.open(TRAIL_CACHE);
+    let done = 0;
+    let failed = 0;
+    for (let offset = 0; offset < urls.length; offset += 12) {
+      const batch = urls.slice(offset, offset + 12);
+      const results = await Promise.allSettled(batch.map(async url => {
+        if (!(await cache.match(url))) {
+          const response = await fetch(url, { mode: 'no-cors' });
+          await cache.put(url, response);
+        }
+      }));
+      failed += results.filter(result => result.status === 'rejected').length;
+      done += batch.length;
+      const clients = await self.clients.matchAll({ includeUncontrolled: true });
+      clients.forEach(client => client.postMessage({ type: 'TRAIL_CACHE_STATUS', dayId, done, total: urls.length, failed, complete: done === urls.length && failed === 0 }));
+    }
+  })());
 });
