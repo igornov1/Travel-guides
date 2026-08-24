@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="Slovakia Travel Guide" xmlns="http://www.topografix.com/GPX/1/1">
-<metadata><name>Tatranská Lomnica — Skalnaté pleso</name></metadata>
-<trk><name>Cable car</name><trkseg><trkpt lat="49.1664923" lon="20.2703794"></trkpt><trkpt lat="49.1791112" lon="20.2559057"></trkpt><trkpt lat="49.188554" lon="20.2320891"></trkpt></trkseg></trk>
-<trk><name>Skalnaté pleso walk — no colour marking</name><trkseg><trkpt lat="49.188554" lon="20.2320891"></trkpt><trkpt lat="49.18895" lon="20.23305"></trkpt><trkpt lat="49.18955" lon="20.23235"></trkpt><trkpt lat="49.18935" lon="20.23115"></trkpt><trkpt lat="49.18875" lon="20.23075"></trkpt><trkpt lat="49.188554" lon="20.2320891"></trkpt></trkseg></trk>
+  <metadata>
+    <name>31 Aug — Tatranská Lomnica → Skalnaté pleso → Štart</name>
+    <desc>Cable car up, lakeside walk, then hike down to Štart. From Štart continue by Mountain Cart to Tatranská Lomnica if operating.</desc>
+  </metadata>
+
+  <wpt lat="49.1664923" lon="20.2703794"><name>Tatranská Lomnica</name></wpt>
+  <wpt lat="49.1791112" lon="20.2559057"><name>Štart</name><desc>Mountain Cart start point</desc></wpt>
+  <wpt lat="49.188554" lon="20.2320891"><name>Skalnaté pleso</name></wpt>
+  <wpt lat="49.1862180" lon="20.2336278"><name>Skalnatá chata</name></wpt>
+
+  <trk>
+    <name>Cable car — Tatranská Lomnica → Skalnaté pleso</name>
+    <trkseg>
+      <trkpt lat="49.1664923" lon="20.2703794" />
+      <trkpt lat="49.1791112" lon="20.2559057" />
+      <trkpt lat="49.188554" lon="20.2320891" />
+    </trkseg>
+  </trk>
+
+  <trk>
+    <name>Skalnaté pleso lakeside walk — no colour marking</name>
+    <trkseg>
+      <trkpt lat="49.188554" lon="20.2320891" />
+      <trkpt lat="49.18895" lon="20.23305" />
+      <trkpt lat="49.18955" lon="20.23235" />
+      <trkpt lat="49.18935" lon="20.23115" />
+      <trkpt lat="49.18875" lon="20.23075" />
+      <trkpt lat="49.188554" lon="20.2320891" />
+    </trkseg>
+  </trk>
+
+  <rte>
+    <name>Hike down — Skalnaté pleso → Štart</name>
+    <desc>Approx. 3.1 km, about 1 h 15 min downhill. Follow official markings: short RED section from Skalnaté pleso, then RED/GREEN near Skalnatá chata, then GREEN downhill to Štart. Do not rely on this GPX line as turn-by-turn navigation; follow official trail signs on the ground.</desc>
+    <rtept lat="49.188554" lon="20.2320891"><name>Skalnaté pleso</name><desc>Start downhill on RED</desc></rtept>
+    <rtept lat="49.1862180" lon="20.2336278"><name>Skalnatá chata</name><desc>RED/GREEN section</desc></rtept>
+    <rtept lat="49.1791112" lon="20.2559057"><name>Štart</name><desc>Continue by Mountain Cart if open</desc></rtept>
+  </rte>
 </gpx>
