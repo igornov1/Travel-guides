@@ -1,4 +1,4 @@
-const CORE_CACHE = 'slovakia-guide-core-v8';
+const CORE_CACHE = 'slovakia-guide-core-v9';
 const TRAIL_CACHE = 'slovakia-guide-trails-v3';
 const CORE_URLS = [
   './', './guide.html', './trail-days.json',
