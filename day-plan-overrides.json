@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "replacements": [
+    {
+      "from": "Take the cable car down only to Štart.",
+      "to": "Hike down from Skalnaté pleso to Štart via the marked trail (~3.1 km, about 1 h 15 min)."
+    },
+    {
+      "from": "Спуск на канатке только до Štart.",
+      "to": "Спуск пешком от Skalnaté pleso до Štart по маркированной тропе (~3,1 км, около 1 ч 15 мин)."
+    },
+    {
+      "from": "Mountain Cart down to Tatranská Lomnica.",
+      "to": "Mountain Cart from Štart down to Tatranská Lomnica (weather permitting)."
+    },
+    {
+      "from": "Mountain Cart вниз до Tatranská Lomnica.",
+      "to": "Mountain Cart от Štart вниз до Tatranská Lomnica (если сухая погода)."
+    }
+  ]
+}
